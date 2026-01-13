@@ -125,6 +125,9 @@
       font-size:13px;
     }
     .smallLinks{display:flex;gap:12px;flex-wrap:wrap}
+
+    /* Honeypot hidden field */
+    .hp-wrap{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
   </style>
 </head>
 
@@ -152,7 +155,6 @@
     <section class="grid">
       <div class="card" id="courses">
         <div class="courses">
-
           <div class="card" style="box-shadow:none;">
             <div class="courseHeader">
               <div>
@@ -161,36 +163,11 @@
               </div>
               <div class="pill">1 class/week • 1 year</div>
             </div>
-
             <ul class="list">
-              <li class="li">
-                <div class="dot"></div>
-                <div>
-                  <b>Core skills</b>
-                  <span>Sequencing, loops, conditionals, events, debugging, and computational thinking.</span>
-                </div>
-              </li>
-              <li class="li">
-                <div class="dot"></div>
-                <div>
-                  <b>Tools</b>
-                  <span>Scratch + Logo-style thinking for logic, shapes, patterns, and storytelling.</span>
-                </div>
-              </li>
-              <li class="li">
-                <div class="dot"></div>
-                <div>
-                  <b>AI basics</b>
-                  <span>What AI is, how data works, patterns, fairness, and safe/ethical AI habits.</span>
-                </div>
-              </li>
-              <li class="li">
-                <div class="dot"></div>
-                <div>
-                  <b>Capstone projects</b>
-                  <span>Games, animations, interactive stories, and simple “smart” projects (high-level).</span>
-                </div>
-              </li>
+              <li class="li"><div class="dot"></div><div><b>Core skills</b><span>Sequencing, loops, conditionals, events, debugging, and computational thinking.</span></div></li>
+              <li class="li"><div class="dot"></div><div><b>Tools</b><span>Scratch + Logo-style thinking for logic, shapes, patterns, and storytelling.</span></div></li>
+              <li class="li"><div class="dot"></div><div><b>AI basics</b><span>What AI is, how data works, patterns, fairness, and safe/ethical AI habits.</span></div></li>
+              <li class="li"><div class="dot"></div><div><b>Capstone projects</b><span>Games, animations, interactive stories, and simple “smart” projects (high-level).</span></div></li>
             </ul>
           </div>
 
@@ -204,39 +181,13 @@
               </div>
               <div class="pill">1 class/week • 1 year</div>
             </div>
-
             <ul class="list">
-              <li class="li">
-                <div class="dot green"></div>
-                <div>
-                  <b>Python foundations</b>
-                  <span>Variables, types, conditionals, loops, functions, lists/dictionaries, and clean coding.</span>
-                </div>
-              </li>
-              <li class="li">
-                <div class="dot green"></div>
-                <div>
-                  <b>Projects-first learning</b>
-                  <span>Short builds that teach problem-solving, debugging, and teamwork habits.</span>
-                </div>
-              </li>
-              <li class="li">
-                <div class="dot green"></div>
-                <div>
-                  <b>AI fundamentals</b>
-                  <span>Data, features, training vs testing, simple models (high-level), and responsible AI.</span>
-                </div>
-              </li>
-              <li class="li">
-                <div class="dot green"></div>
-                <div>
-                  <b>Capstone projects</b>
-                  <span>Python apps + beginner AI mini-projects (high-level) with a showcase at the end.</span>
-                </div>
-              </li>
+              <li class="li"><div class="dot green"></div><div><b>Python foundations</b><span>Variables, types, conditionals, loops, functions, lists/dictionaries, and clean coding.</span></div></li>
+              <li class="li"><div class="dot green"></div><div><b>Projects-first learning</b><span>Short builds that teach problem-solving, debugging, and teamwork habits.</span></div></li>
+              <li class="li"><div class="dot green"></div><div><b>AI fundamentals</b><span>Data, features, training vs testing, simple models (high-level), and responsible AI.</span></div></li>
+              <li class="li"><div class="dot green"></div><div><b>Capstone projects</b><span>Python apps + beginner AI mini-projects (high-level) with a showcase at the end.</span></div></li>
             </ul>
           </div>
-
         </div>
       </div>
 
@@ -293,10 +244,16 @@
             <textarea id="notes" name="notes" placeholder="Any goals, experience level, availability, etc."></textarea>
           </div>
 
-          <button class="submit" type="submit">Submit Registration</button>
+          <!-- Honeypot field (bots often fill it; humans never see it) -->
+          <div class="hp-wrap" aria-hidden="true">
+            <label for="hp">Leave this blank</label>
+            <input id="hp" name="hp" autocomplete="off" tabindex="-1" />
+          </div>
+
+          <button class="submit" id="submitBtn" type="submit">Submit Registration</button>
           <div class="status" id="status"></div>
           <div class="note">
-            Submission opens a confirmation tab (this avoids browser CORS blocking).
+            Your info is sent securely in the request body (not in the URL).
           </div>
         </form>
       </div>
@@ -314,16 +271,27 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ✅ Paste your deployed Apps Script Web App URL here (must end with /exec)
+    // ✅ 1) Paste your deployed Apps Script Web App URL here (must end with /exec)
     const GOOGLE_SCRIPT_WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbzbKXlwZO5mMzigypdGnOwzxCtpHQXUo5kSNz6bEM1A-u7VNujIB9mZo44XEhFXnxo/exec";
+      "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
+
+    // ✅ 2) Paste the SAME SECRET as in Code.gs here
+    const FORM_SECRET_KEY =
+      "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET";
 
     const form = document.getElementById("regForm");
     const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
 
     function setStatus(msg, ok=true){
       statusEl.textContent = msg;
       statusEl.style.color = ok ? "#a7f3d0" : "#fecaca";
+    }
+
+    function disableForm(disabled){
+      submitBtn.disabled = disabled;
+      submitBtn.style.opacity = disabled ? "0.7" : "1";
+      submitBtn.style.cursor = disabled ? "not-allowed" : "pointer";
     }
 
     form.addEventListener("submit", async (e) => {
@@ -333,29 +301,53 @@
         setStatus("Missing/invalid Apps Script URL. Paste the /exec Web App URL.", false);
         return;
       }
+      if (!FORM_SECRET_KEY || FORM_SECRET_KEY.length < 20) {
+        setStatus("Secret key looks too short. Use a long random secret.", false);
+        return;
+      }
 
-      const data = {
-        key: "PASTE_THE_SAME_SECRET_HERE",
-  parentName: form.parentName.value.trim(),
-  studentName: form.studentName.value.trim(),
-  email: form.email.value.trim(),
-  phone: form.phone.value.trim(),
-  grade: form.grade.value,
-  course: form.course.value,
-  notes: form.notes.value.trim(),
-  submittedAt: new Date().toISOString()
+      const payload = {
+        key: FORM_SECRET_KEY,
+        parentName: form.parentName.value.trim(),
+        studentName: form.studentName.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+        grade: form.grade.value,
+        course: form.course.value,
+        notes: form.notes.value.trim(),
+        submittedAt: new Date().toISOString(),
+        hp: (form.hp && form.hp.value) ? form.hp.value : "" // honeypot
       };
 
-      //  CORS-free submission: open the Apps Script confirmation page in a new tab
-    const res = await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
-  method: "POST",
-  headers: { "Content-Type": "text/plain;charset=utf-8" },
-  body: JSON.stringify(data),
-});
-      setStatus(res.ok ? "Submitted!" : "Submission failed", res.ok);
-      form.reset();
+      disableForm(true);
+      setStatus("Submitting…");
+
+      try {
+        // Use text/plain to reduce Apps Script CORS/preflight issues
+        const res = await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        // Apps Script sometimes returns non-JSON, so parse safely
+        const txt = await res.text();
+        let json = {};
+        try { json = JSON.parse(txt); } catch { json = {}; }
+
+        if (!res.ok || json.ok === false) {
+          throw new Error(json.error || "Request failed");
+        }
+
+        setStatus("Submitted! We’ll contact you soon.");
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        setStatus("Submission failed. Check Apps Script deployment access + URL.", false);
+      } finally {
+        disableForm(false);
+      }
     });
   </script>
 </body>
 </html>
-
