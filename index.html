@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Code Explorers — Remote Coding & AI Classes</title>
+  <style>
+    :root{
+      --bg:#0b0f19;
+      --card:#111827;
+      --muted:#9ca3af;
+      --text:#e5e7eb;
+      --accent:#7c3aed;
+      --accent2:#22c55e;
+      --border:rgba(255,255,255,.08);
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 20% -10%, rgba(124,58,237,.35), transparent 60%),
+                  radial-gradient(900px 600px at 80% 0%, rgba(34,197,94,.20), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:32px 18px 70px}
+    header{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+      padding:18px 0 26px;border-bottom:1px solid var(--border);
+    }
+    .brand{
+      display:flex;flex-direction:column;gap:8px;
+    }
+    .logo{
+      display:inline-flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px;
+      font-size:22px;
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border:1px solid var(--border);
+      border-radius:999px;background:rgba(255,255,255,.03);
+      color:var(--muted);font-size:13px;
+    }
+    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      padding:10px 14px;border-radius:999px;
+      text-decoration:none;font-weight:600;font-size:14px;
+    }
+    .btn.primary{
+      background:linear-gradient(135deg, rgba(124,58,237,.9), rgba(124,58,237,.55));
+      border-color: rgba(124,58,237,.55);
+      box-shadow: 0 10px 22px rgba(124,58,237,.25);
+    }
+    .hero{padding:26px 0 18px}
+    .hero h1{margin:0;font-size:38px;line-height:1.1;letter-spacing:-.4px}
+    .hero p{margin:12px 0 0;color:var(--muted);max-width:760px;font-size:16px;line-height:1.55}
+    .grid{
+      display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:22px;
+    }
+    @media (max-width: 900px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:rgba(17,24,39,.78);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      backdrop-filter: blur(10px);
+    }
+    .courses{display:grid;grid-template-columns:1fr;gap:14px}
+    .courseHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .courseHeader h2{margin:0;font-size:18px}
+    .pill{
+      font-size:12px;color:var(--muted);
+      border:1px solid var(--border);
+      padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+    .sub{color:var(--muted);margin:8px 0 0;line-height:1.5}
+    .list{
+      margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px;
+    }
+    .li{
+      display:flex;gap:10px;align-items:flex-start;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid var(--border);background:rgba(255,255,255,.02);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;margin-top:4px;flex:0 0 auto;
+      background:var(--accent);
+      box-shadow:0 0 0 4px rgba(124,58,237,.18);
+    }
+    .dot.green{
+      background:var(--accent2);
+      box-shadow:0 0 0 4px rgba(34,197,94,.18);
+    }
+    .li b{display:block;font-size:13px}
+    .li span{display:block;color:var(--muted);font-size:13px;line-height:1.4;margin-top:2px}
+    .divider{height:1px;background:var(--border);margin:16px 0}
+    .form h3{margin:0 0 10px;font-size:18px}
+    .field{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+    label{font-size:13px;color:var(--muted)}
+    input, select, textarea{
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:11px 12px;
+      outline:none;
+      font-size:14px;
+    }
+    textarea{min-height:92px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width: 520px){.row{grid-template-columns:1fr}}
+    .submit{
+      width:100%;
+      margin-top:10px;
+      padding:12px 14px;border-radius:14px;
+      border:1px solid rgba(124,58,237,.55);
+      background:linear-gradient(135deg, rgba(124,58,237,.95), rgba(124,58,237,.55));
+      color:white;font-weight:800;cursor:pointer;font-size:14px;
+    }
+    .note{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.45}
+    .status{margin-top:10px;font-size:14px}
+    footer{
+      margin-top:26px;color:var(--muted);
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      border-top:1px solid var(--border);padding-top:16px;
+      font-size:13px;
+    }
+    .smallLinks{display:flex;gap:12px;flex-wrap:wrap}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">Code Explorers</div>
+        <div class="badge">Remote • 1 class/week • Year-long programs</div>
+      </div>
+      <div class="ctaRow">
+        <a class="btn" href="#courses">Courses</a>
+        <a class="btn primary" href="#register">Register</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1>Programming & AI fundamentals for kids — built for confidence.</h1>
+      <p>
+        Two year-long remote programs with one class per week. Students learn by building projects,
+        practicing problem-solving, and exploring real-world AI concepts at the right level.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="card" id="courses">
+        <div class="courses">
+
+          <div class="card" style="box-shadow:none;">
+            <div class="courseHeader">
+              <div>
+                <h2>Grades 2–5: Programming + AI Foundations (Scratch / Logo)</h2>
+                <p class="sub">A gentle, creative introduction to coding and AI ideas using visual tools and beginner-friendly logic.</p>
+              </div>
+              <div class="pill">1 class/week • 1 year</div>
+            </div>
+
+            <ul class="list">
+              <li class="li">
+                <div class="dot"></div>
+                <div>
+                  <b>Core skills</b>
+                  <span>Sequencing, loops, conditionals, events, debugging, and computational thinking.</span>
+                </div>
+              </li>
+              <li class="li">
+                <div class="dot"></div>
+                <div>
+                  <b>Tools</b>
+                  <span>Scratch + Logo-style thinking for logic, shapes, patterns, and storytelling.</span>
+                </div>
+              </li>
+              <li class="li">
+                <div class="dot"></div>
+                <div>
+                  <b>AI basics</b>
+                  <span>What AI is, how data works, patterns, fairness, and safe/ethical AI habits.</span>
+                </div>
+              </li>
+              <li class="li">
+                <div class="dot"></div>
+                <div>
+                  <b>Capstone projects</b>
+                  <span>Games, animations, interactive stories, and simple “smart” projects (high-level).</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="card" style="box-shadow:none;">
+            <div class="courseHeader">
+              <div>
+                <h2>Grades 6–10: Python + AI Fundamentals</h2>
+                <p class="sub">A practical pathway into Python, data thinking, and beginner AI workflows through hands-on mini builds.</p>
+              </div>
+              <div class="pill">1 class/week • 1 year</div>
+            </div>
+
+            <ul class="list">
+              <li class="li">
+                <div class="dot green"></div>
+                <div>
+                  <b>Python foundations</b>
+                  <span>Variables, types, conditionals, loops, functions, lists/dictionaries, and clean coding.</span>
+                </div>
+              </li>
+              <li class="li">
+                <div class="dot green"></div>
+                <div>
+                  <b>Projects-first learning</b>
+                  <span>Short builds that teach problem-solving, debugging, and teamwork habits.</span>
+                </div>
+              </li>
+              <li class="li">
+                <div class="dot green"></div>
+                <div>
+                  <b>AI fundamentals</b>
+                  <span>Data, features, training vs testing, simple models (high-level), and responsible AI.</span>
+                </div>
+              </li>
+              <li class="li">
+                <div class="dot green"></div>
+                <div>
+                  <b>Capstone projects</b>
+                  <span>Python apps + beginner AI mini-projects (high-level) with a showcase at the end.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card form" id="register">
+        <h3>Registration</h3>
+        <p class="sub" style="margin-top:0;">
+          Submit this form and it will be saved to our Google Sheet.
+        </p>
+
+        <form id="regForm">
+          <div class="row">
+            <div class="field">
+              <label for="parentName">Parent/Guardian Name</label>
+              <input id="parentName" name="parentName" required placeholder="e.g., Ayesha Khan" />
+            </div>
+            <div class="field">
+              <label for="studentName">Student Name</label>
+              <input id="studentName" name="studentName" required placeholder="e.g., Sam" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" required placeholder="name@email.com" />
+            </div>
+            <div class="field">
+              <label for="phone">Phone (optional)</label>
+              <input id="phone" name="phone" placeholder="+1 ..." />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="grade">Grade</label>
+              <select id="grade" name="grade" required>
+                <option value="" disabled selected>Select grade</option>
+                <option>2</option><option>3</option><option>4</option><option>5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="course">Course</label>
+              <select id="course" name="course" required>
+                <option value="" disabled selected>Select course</option>
+                <option value="Grades 2–5: Programming + AI Foundations">Grades 2–5: Programming + AI Foundations</option>
+                <option value="Grades 6–10: Python + AI Fundamentals">Grades 6–10: Python + AI Fundamentals</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="notes">Notes (optional)</label>
+            <textarea id="notes" name="notes" placeholder="Any goals, experience level, availability, etc."></textarea>
+          </div>
+
+          <button class="submit" type="submit">Submit Registration</button>
+          <div class="status" id="status"></div>
+          <div class="note">
+            Tip: If the submit button says “failed”, it usually means the Google Apps Script URL isn’t set yet.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> Code Explorers</div>
+      <div class="smallLinks">
+        <a href="#courses">Courses</a>
+        <a href="#register">Register</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // 1) Paste your deployed Google Apps Script Web App URL here:
+    const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1_bCX9uaK9Qp6LMehCSNFI0njBc0Xymt0XY8W4CdedyuoOxGGn9iTzrI7Vr9TDmZ-/exec";
+
+    const form = document.getElementById("regForm");
+    const statusEl = document.getElementById("status");
+
+    function setStatus(msg, ok=true){
+      statusEl.textContent = msg;
+      statusEl.style.color = ok ? "#a7f3d0" : "#fecaca";
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!GOOGLE_SCRIPT_WEB_APP_URL || GOOGLE_SCRIPT_WEB_APP_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+        setStatus("Missing Google Apps Script URL. Paste it into the code first.", false);
+        return;
+      }
+
+      const data = {
+        parentName: form.parentName.value.trim(),
+        studentName: form.studentName.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+        grade: form.grade.value,
+        course: form.course.value,
+        notes: form.notes.value.trim(),
+        submittedAt: new Date().toISOString()
+      };
+
+      setStatus("Submitting…");
+
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
+          method: "POST",
+          mode: "cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const json = await res.json().catch(() => ({}));
+
+        if (!res.ok || json.ok === false) {
+          throw new Error(json.error || "Request failed");
+        }
+
+        setStatus("Submitted! We’ll contact you soon.");
+        form.reset();
+      } catch (err) {
+        setStatus("Submission failed. Check the Apps Script deployment permissions + URL.", false);
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
