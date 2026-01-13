@@ -31,13 +31,8 @@
       display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
       padding:18px 0 26px;border-bottom:1px solid var(--border);
     }
-    .brand{
-      display:flex;flex-direction:column;gap:8px;
-    }
-    .logo{
-      display:inline-flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px;
-      font-size:22px;
-    }
+    .brand{display:flex;flex-direction:column;gap:8px}
+    .logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px;font-size:22px}
     .badge{
       display:inline-flex;align-items:center;gap:8px;
       padding:8px 12px;border:1px solid var(--border);
@@ -60,9 +55,7 @@
     .hero{padding:26px 0 18px}
     .hero h1{margin:0;font-size:38px;line-height:1.1;letter-spacing:-.4px}
     .hero p{margin:12px 0 0;color:var(--muted);max-width:760px;font-size:16px;line-height:1.55}
-    .grid{
-      display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:22px;
-    }
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:22px}
     @media (max-width: 900px){.grid{grid-template-columns:1fr}}
     .card{
       background:rgba(17,24,39,.78);
@@ -82,9 +75,7 @@
       white-space:nowrap;
     }
     .sub{color:var(--muted);margin:8px 0 0;line-height:1.5}
-    .list{
-      margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px;
-    }
+    .list{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px}
     .li{
       display:flex;gap:10px;align-items:flex-start;
       padding:10px 12px;border-radius:14px;
@@ -305,7 +296,7 @@
           <button class="submit" type="submit">Submit Registration</button>
           <div class="status" id="status"></div>
           <div class="note">
-            Tip: If the submit button says “failed”, it usually means the Google Apps Script URL isn’t set yet.
+            Submission opens a confirmation tab (this avoids browser CORS blocking).
           </div>
         </form>
       </div>
@@ -323,8 +314,9 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // 1) Paste your deployed Google Apps Script Web App URL here:
-    const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzbKXlwZO5mMzigypdGnOwzxCtpHQXUo5kSNz6bEM1A-u7VNujIB9mZo44XEhFXnxo/exec";
+    // ✅ Paste your deployed Apps Script Web App URL here (must end with /exec)
+    const GOOGLE_SCRIPT_WEB_APP_URL =
+      "https://script.google.com/macros/s/AKfycbzbKXlwZO5mMzigypdGnOwzxCtpHQXUo5kSNz6bEM1A-u7VNujIB9mZo44XEhFXnxo/exec";
 
     const form = document.getElementById("regForm");
     const statusEl = document.getElementById("status");
@@ -337,8 +329,8 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      if (!GOOGLE_SCRIPT_WEB_APP_URL || GOOGLE_SCRIPT_WEB_APP_URL.includes("https://script.google.com/macros/s/AKfycbzbKXlwZO5mMzigypdGnOwzxCtpHQXUo5kSNz6bEM1A-u7VNujIB9mZo44XEhFXnxo/exec")) {
-        setStatus("Missing Google Apps Script URL. Paste it into the code first.", false);
+      if (!GOOGLE_SCRIPT_WEB_APP_URL || !GOOGLE_SCRIPT_WEB_APP_URL.includes("/exec")) {
+        setStatus("Missing/invalid Apps Script URL. Paste the /exec Web App URL.", false);
         return;
       }
 
@@ -353,33 +345,15 @@
         submittedAt: new Date().toISOString()
       };
 
-      setStatus("Submitting…");
+      //  CORS-free submission: open the Apps Script confirmation page in a new tab
+      const params = new URLSearchParams(data).toString();
+      const url = `${GOOGLE_SCRIPT_WEB_APP_URL}?${params}`;
 
-      try {
-       const params = new URLSearchParams(data).toString();
-const res = await fetch(const params = new URLSearchParams(data).toString();
-const url = `${GOOGLE_SCRIPT_WEB_APP_URL}?${params}`;
+      window.open(url, "_blank");
 
-// Open the Apps Script confirmation page (no CORS)
-window.open(url, "_blank");
-
-setStatus("Opened submission page. If it says ✅ submitted, you’re done!");
-form.reset();
-);
-
-        if (!res.ok) throw new Error("Request failed");
-
-        setStatus("Submitted! We’ll contact you soon.");
-        form.reset();
-      } catch (err) {
-        setStatus("Submission failed. Check the Apps Script deployment permissions + URL.", false);
-        console.error(err);
-      }
+      setStatus("Opened submission page. If the new tab shows ✅ submitted, you're done!");
+      form.reset();
     });
   </script>
 </body>
 </html>
-
-
-
-
