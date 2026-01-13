@@ -335,25 +335,27 @@
       }
 
       const data = {
-        parentName: form.parentName.value.trim(),
-        studentName: form.studentName.value.trim(),
-        email: form.email.value.trim(),
-        phone: form.phone.value.trim(),
-        grade: form.grade.value,
-        course: form.course.value,
-        notes: form.notes.value.trim(),
-        submittedAt: new Date().toISOString()
+        key: "PASTE_THE_SAME_SECRET_HERE",
+  parentName: form.parentName.value.trim(),
+  studentName: form.studentName.value.trim(),
+  email: form.email.value.trim(),
+  phone: form.phone.value.trim(),
+  grade: form.grade.value,
+  course: form.course.value,
+  notes: form.notes.value.trim(),
+  submittedAt: new Date().toISOString()
       };
 
       //  CORS-free submission: open the Apps Script confirmation page in a new tab
-      const params = new URLSearchParams(data).toString();
-      const url = `${GOOGLE_SCRIPT_WEB_APP_URL}?${params}`;
-
-      window.open(url, "_blank");
-
-      setStatus("Opened submission page. If the new tab shows ✅ submitted, you're done!");
+    const res = await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
+  method: "POST",
+  headers: { "Content-Type": "text/plain;charset=utf-8" },
+  body: JSON.stringify(data),
+});
+      setStatus(res.ok ? "Submitted!" : "Submission failed", res.ok);
       form.reset();
     });
   </script>
 </body>
 </html>
+
