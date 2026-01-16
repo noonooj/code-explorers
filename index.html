@@ -125,8 +125,6 @@
       font-size:13px;
     }
     .smallLinks{display:flex;gap:12px;flex-wrap:wrap}
-
-    /* Honeypot hidden field */
     .hp-wrap{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
   </style>
 </head>
@@ -193,9 +191,7 @@
 
       <div class="card form" id="register">
         <h3>Registration</h3>
-        <p class="sub" style="margin-top:0;">
-          Submit this form and it will be saved to our Google Sheet.
-        </p>
+        <p class="sub" style="margin-top:0;">Submit this form and it will be saved to our Google Sheet.</p>
 
         <form id="regForm">
           <div class="row">
@@ -244,7 +240,6 @@
             <textarea id="notes" name="notes" placeholder="Any goals, experience level, availability, etc."></textarea>
           </div>
 
-          <!-- Honeypot field (bots often fill it; humans never see it) -->
           <div class="hp-wrap" aria-hidden="true">
             <label for="hp">Leave this blank</label>
             <input id="hp" name="hp" autocomplete="off" tabindex="-1" />
@@ -252,9 +247,7 @@
 
           <button class="submit" id="submitBtn" type="submit">Submit Registration</button>
           <div class="status" id="status"></div>
-          <div class="note">
-            Your info is sent securely in the request body (not in the URL).
-          </div>
+          <div class="note">Your info is sent in the request body (not in the URL).</div>
         </form>
       </div>
     </section>
@@ -271,13 +264,11 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ✅ 1) Paste your deployed Apps Script Web App URL here (must end with /exec)
-    const GOOGLE_SCRIPT_WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbzbKXlwZO5mMzigypdGnOwzxCtpHQXUo5kSNz6bEM1A-u7VNujIB9mZo44XEhFXnxo/exec";
+    // ✅ Paste your Apps Script /exec URL here
+    const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxruvgC3EimKFm52G2SxlfyKWe4Hlu5zKmLXKfRQdstGNXMVuuaSdyWUFKLvTxYD9zz/exec";
 
-    // ✅ 2) Paste the SAME SECRET as in Code.gs here
-    const FORM_SECRET_KEY =
-      "YOUR_LONG_RANDOM_SECRET";
+    // ✅ Paste the SAME secret you used in Code.gs
+    const FORM_SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET";
 
     const form = document.getElementById("regForm");
     const statusEl = document.getElementById("status");
@@ -287,7 +278,6 @@
       statusEl.textContent = msg;
       statusEl.style.color = ok ? "#a7f3d0" : "#fecaca";
     }
-
     function disableForm(disabled){
       submitBtn.disabled = disabled;
       submitBtn.style.opacity = disabled ? "0.7" : "1";
@@ -297,12 +287,12 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      if (!GOOGLE_SCRIPT_WEB_APP_URL || !GOOGLE_SCRIPT_WEB_APP_URL.includes("/exec")) {
-        setStatus("Missing/invalid Apps Script URL. Paste the /exec Web App URL.", false);
+      if (!GOOGLE_SCRIPT_WEB_APP_URL.includes("/exec")) {
+        setStatus("Invalid Apps Script URL. Paste the /exec Web App URL.", false);
         return;
       }
       if (!FORM_SECRET_KEY || FORM_SECRET_KEY.length < 20) {
-        setStatus("Secret key looks too short. Use a long random secret.", false);
+        setStatus("Secret key is too short. Use a long random secret.", false);
         return;
       }
 
@@ -316,28 +306,25 @@
         course: form.course.value,
         notes: form.notes.value.trim(),
         submittedAt: new Date().toISOString(),
-        hp: (form.hp && form.hp.value) ? form.hp.value : "" // honeypot
+        hp: (form.hp && form.hp.value) ? form.hp.value : ""
       };
 
       disableForm(true);
       setStatus("Submitting…");
 
       try {
-        // Use text/plain to reduce Apps Script CORS/preflight issues
         const res = await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
           method: "POST",
+          // text/plain helps avoid preflight/CORS issues with Apps Script
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
 
-        // Apps Script sometimes returns non-JSON, so parse safely
         const txt = await res.text();
         let json = {};
         try { json = JSON.parse(txt); } catch { json = {}; }
 
-        if (!res.ok || json.ok === false) {
-          throw new Error(json.error || "Request failed");
-        }
+        if (!res.ok || json.ok === false) throw new Error(json.error || "Request failed");
 
         setStatus("Submitted! We’ll contact you soon.");
         form.reset();
@@ -351,4 +338,3 @@
   </script>
 </body>
 </html>
-
