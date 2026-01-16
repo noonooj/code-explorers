@@ -268,7 +268,7 @@
     const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxruvgC3EimKFm52G2SxlfyKWe4Hlu5zKmLXKfRQdstGNXMVuuaSdyWUFKLvTxYD9zz/exec";
 
     // ✅ Paste the SAME secret you used in Code.gs
-    const FORM_SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET";
+    const FORM_SECRET_KEY = "blahbhlahblahdrac";
 
     const form = document.getElementById("regForm");
     const statusEl = document.getElementById("status");
@@ -328,13 +328,14 @@
 
         setStatus("Submitted! We’ll contact you soon.");
         form.reset();
-      } catch (err) {
-        console.error(err);
-        setStatus("Submission failed. Check Apps Script deployment access + URL.", false);
-      } finally {
+   } catch (err) {
+  console.error(err);
+  setStatus("Submission failed: " + (err?.message || String(err)), false);
+}finally {
         disableForm(false);
       }
     });
   </script>
 </body>
 </html>
+
